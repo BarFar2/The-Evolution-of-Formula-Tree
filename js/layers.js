@@ -28,6 +28,12 @@ addLayer("fo", {
     exponent: 114514,
     gainMult() { // Calculate the multiplier for main currency from bonuses
         
+        //if (player.fo.points.eq(0)) { 
+        //    fn = "P = t = " + format(player.fo.t);
+        //} else if (player.fo.points.eq(1)) { 
+        //    fn = "P = a * t = " + format(player.a.a) + " * " + format(player.fo.t) + " = " + format(player.points);
+        //} 
+
         if (hasMilestone("fo",1)) {
             player.fo.milestones = [0];
             player.fo.points = new OmegaNum(1);
@@ -53,7 +59,7 @@ addLayer("fo", {
     //    return formulaDt();
     //},
     effectDescription() {
-        var fm = "";
+        //var fm = "";
         if (player.fo.points.eq(0)) { 
             fm = "P = t = " + format(player.fo.t);
         } else if (player.fo.points.eq(1)) { 
@@ -117,8 +123,10 @@ addLayer("fo", {
             for (var i = 1; i <= 2; i++) {
                 setBuyableAmount("a", 10 + i, new OmegaNum(0));
             }
+            player.a.aazt = 0;
         }
     },
+
 })
 
 var fda = ""
@@ -139,6 +147,8 @@ addLayer("a", {
         a1: new OmegaNum(1),
         a2: new OmegaNum(1),
         a3: new OmegaNum(1),
+        aazt: 0,
+        mid: 0,
     }},
     color: "#FFF050",
     resource: "ap", // Name of prestige currency
@@ -147,6 +157,11 @@ addLayer("a", {
     baseAmount() {return player.points},
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5,
+    b() {var fp = player.fo.points.toNumber()
+        switch(fp){
+        case 0:return `P = t = ${player.fo.t}`
+        case 1:return `P = a * t = ${player.a.points} * ${player.fo.t}`
+        }},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         
 
@@ -185,9 +200,9 @@ addLayer("a", {
         } else if (hasMilestone("a",0) && !hasMilestone("a",1)) {
             fm = "a = a1 = " + format(player.a.a1) + "<br>a1 = 1 + " + format(getBuyableAmount("a", 11)) + " = " + format(getBuyableAmount("a", 11).add(1));
         } else if (hasMilestone("a",1) && !hasUpgrade("a",11)) {
-            fm = "a = a1 * a2 = " + format(player.a.a1) + " * " + format(player.a.a2) + " = " + format(player.a.a) + "<br>a1 = 1 + " + format(getBuyableAmount("a", 11)) + " = " + format(player.a.a1) + "<br>a2 = 1 + " + format(getBuyableAmount("a", 12) + " = " + format(player.a.a2));
+            fm = "a = a1 * a2 = " + format(player.a.a1) + " * " + format(player.a.a2) + " = " + format(player.a.a) + "<br>a1 = 1 + " + format(getBuyableAmount("a", 11)) + " = " + format(player.a.a1) + "<br>a2 = 1 + " + format(getBuyableAmount("a", 12)) + " = " + format(player.a.a2);
         } else if (hasMilestone("a",1) && hasUpgrade("a",11) && !hasUpgrade("a",12)) {
-            fm = "a = a1 * a2 = " + format(player.a.a1) + " * " + format(player.a.a2) + " = " + format(player.a.a) + "<br>a1 = 1 + " + format(getBuyableAmount("a", 11)) + " + " + format(player.a.a2) + " = " + format(player.a.a1) + "<br>a2 = 1 + " + format(getBuyableAmount("a", 12) + " = " + format(player.a.a2));
+            fm = "a = a1 * a2 = " + format(player.a.a1) + " * " + format(player.a.a2) + " = " + format(player.a.a) + "<br>a1 = 1 + " + format(getBuyableAmount("a", 11)) + " + " + format(player.a.a2) + " = " + format(player.a.a1) + "<br>a2 = 1 + " + format(getBuyableAmount("a", 12)) + " = " + format(player.a.a2);
         } else if (hasMilestone("a",1) && hasUpgrade("a",12) && !hasUpgrade("a",13)) {
             fm = "a = a1 * a2 = " + format(player.a.a1) + " * " + format(player.a.a2) + " = " + format(player.a.a) + "<br>a1 = 1 + " + format(getBuyableAmount("a", 11)) + " + " + format(player.a.a2) + " * " + format(player.points.add(10).log10().pow(1.33)) + " = " + format(player.a.a1) + "<br>a2 = 1 + " + format(getBuyableAmount("a", 12)) + " = " + format(player.a.a2);
         } else if (hasMilestone("a",1) && hasUpgrade("a",13)) {
@@ -196,6 +211,26 @@ addLayer("a", {
         return "<br>" + fm;
     },// + "<br>a1 = " + format(getBuyableAmount("a", 11).add(1)) + "<br>a2 = " + format(getBuyableAmount("a", 12).add(1))
     //player.points.add(10).log10().pow(1.33)
+    clickables: {
+        11: {
+            canClick(){return true},
+            display() {
+                if (player.a.aazt == 0) {
+                    return "启用自动a重置"
+                } else if (player.a.aazt == 1) {
+                    return "关闭自动a重置"
+                }
+            },
+            onClick(){
+                if (player.a.aazt == 0) {
+                    player.a.aazt = 1
+                } else if (player.a.aazt == 1) {
+                    player.a.aazt = 0
+                }
+            },
+            unlocked(){ return hasMilestone("a",2)}
+        },
+    },
     milestones: {
         0: {
             requirementDescription: "1 ap",
@@ -210,7 +245,7 @@ addLayer("a", {
         },
         2: {
             requirementDescription: "4 B12数量",
-            effectDescription: "解锁一个垃圾升级",
+            effectDescription: "解锁一个垃圾升级,而且你可以自动a重置(每秒10次)",
             done() { return getBuyableAmount("a", 12).gte(4) },
             unlocked(){return hasMilestone('a',1)}
         },
@@ -277,14 +312,7 @@ addLayer("a", {
         },
         
     },
-    //clickables: {
-        //part1
-        //11: {
-        //    canClick(){return true},
-        //    display() {return `Update the game<br />You've updated ${Utimeformat(player.u.updtime)}.<br /><br />Now you are doing:${updtxt[player.u.doing]}`},
-        //    onClick(){player.u.doing = "upd"}
-        //},
-    //},
+    
     
     upgrades: {
         11: {
@@ -326,7 +354,15 @@ addLayer("a", {
     },
     */
 
-    //inportant!!!
-    //update(diff){
-    //}
+
+    update(diff){
+        if (player.a.aazt == 1) {
+            player.a.mid = min(player.a.mid + diff,0.15);
+            if (player.a.mid >= 0.1 && player.points.gte(10)) {
+                player.a.mid = player.a.mid - 0.1;
+                player.a.points = player.a.points.add(player.points.div(10).root(2));
+                player.fo.t = new OmegaNum(0);
+            }
+        }
+    }
 })

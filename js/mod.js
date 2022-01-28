@@ -9,19 +9,31 @@
 	
 	offlineLimit: 10,  // In hours
 }
-var fd = ""
-function formulaDt() {
-    return "当前公式:" + fd;
-}
+var fn;
+//var fd = "";
+//function formulaDt() {
+//    return "当前公式:" + fd;
+//}
 
+function min(a,b) {
+	if (a >= b) {
+		return b
+	} else {
+		return a
+	}
+}
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
+	num: "0.1.1",
 	name: "",
 }
 
-let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.1</h3><br>
+let changelog = `<h1>更新日志:</h1><br>
+    <h3>v0.1.1</h3><br>
+    - 修复a2的显示bug<br>
+	- 第三个里程碑增加自动a重置的奖励<br>
+	<br>
+    <h3>v0.1</h3><br>
 		- 当前残局：10000ap(au14).<br>`
 
 let winText = `你成功到达了第四个升级！如果你想要玩更多内容，就催更吧`
@@ -50,13 +62,21 @@ function addedPlayerData() { return {
 }}
 
 // Display extra things at the top of the page
+
+        //"<br>当前公式: " + fm;
 var displayThings = [
-	"当前残局：10000ap(au14)"
+	//{var fp = player.fo.points.toNumber()
+	//	switch(fp){
+	//	case 0:return `P = t = ${player.fo.t}`
+	//	case 1:return `P = a * t = ${player.a.points} * ${player.fo.t}`
+	//	}},
+	//f() +
+	"<br>当前残局：10000ap(au14)"
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return false
+	return hasUpgrade("a",14);
 }
 
 
