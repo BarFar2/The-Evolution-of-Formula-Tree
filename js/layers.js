@@ -215,6 +215,7 @@ addLayer("a", {
         var fma = ""
         var fma1 = ""
         var fma2 = ""
+        var fma3 = ""
         if (!hasMilestone("a",0)) { //a
             fma = "a = 1";
         } else if (hasMilestone("a",0) && !hasMilestone("a",1)) {
