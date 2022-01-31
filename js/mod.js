@@ -24,16 +24,20 @@ function min(a,b) {
 }
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.1",
+	num: "0.2.0",
 	name: "",
 }
 
 let changelog = `<h1>更新日志:</h1><br>
+    <h3>v0.2.0</h3><br>
+        - 修复若干bug<br>
+        - 新增一个层级<br>
+    	当前残局：4bp(e25p)
     <h3>v0.1.1</h3><br>
-    - 修复a2的显示bug<br>
-	- 第三个里程碑增加自动a重置的奖励<br>
-    <h3>v0.1</h3><br>
-		- 当前残局：10000ap(au14).<br>`
+        - 修复a2的显示bug<br>
+	    - 第三个里程碑增加自动a重置的奖励<br>
+    <h3>v0.1.0</h3><br>
+	    当前残局：10000ap(au14).<br>`
 
 let winText = `你成功到达了第四个升级！如果你想要玩更多内容，就催更吧`
 
@@ -64,18 +68,18 @@ function addedPlayerData() { return {
 
         //"<br>当前公式: " + fm;
 var displayThings = [
-	//{var fp = player.fo.points.toNumber()
-	//	switch(fp){
-	//	case 0:return `P = t = ${player.fo.t}`
-	//	case 1:return `P = a * t = ${player.a.points} * ${player.fo.t}`
-	//	}},
-	//f() +
-	"<br>当前残局：10000ap(au14)"
+	function(){var fp = player.fo.points.toNumber()
+		switch(fp){
+		case 0:return `P = f(t) = t = ${format(player.fo.t)} = ${format(player.points)}`
+		case 1:return `P = f(t) = a * t = ${format(player.a.a)} * ${format(player.fo.t)} = ${format(player.points)}`
+		case 2:return `P = f(t) = a * t ^ b = ${format(player.a.a)} * ${format(player.fo.t)} ^ ${format(player.b.b)} = ${format(player.points)}`
+		}},
+	"当前残局：10000ap(au14)"
 ]
 
 // Determines when the game "ends"
 function isEndgame() {
-	return hasUpgrade("a",14);
+	return false;
 }
 
 
